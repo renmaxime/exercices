@@ -1,6 +1,6 @@
 # exercices
 
-Exercices de la roadmap : problèmes d'algorithmique (style LeetCode) en Python, chacun avec ses tests pytest.
+Exercices de la roadmap : algorithmique en Python, testés avec pytest et poussés chaque semaine.
 
 ## S01 — Tableaux et hachage
 
