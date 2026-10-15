@@ -1,7 +1,13 @@
-from valid_anagram import isAnagram
+import pytest
 
-def test_anagramme():
+from valid_anagram import isAnagram_counter, isAnagram_dict
+
+
+@pytest.mark.parametrize("isAnagram", [isAnagram_dict, isAnagram_counter])
+def test_anagramme(isAnagram):
     assert isAnagram("anagram", "nagaram") is True
 
-def test_pas_anagramme():
+
+@pytest.mark.parametrize("isAnagram", [isAnagram_dict, isAnagram_counter])
+def test_pas_anagramme(isAnagram):
     assert isAnagram("rat", "car") is False
