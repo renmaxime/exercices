@@ -1,13 +1,16 @@
-from fastapi import FastAPI
 from pydantic import BaseModel
-
+from fastapi import FastAPI, HTTPException
 
 class ItemCreate(BaseModel):
     name: str
 
 app = FastAPI()
 
-items = [{"id":1, "name": "Jean"}, {"id":2, "name": "Benoit"},{"id":3, "name": "Arthur"},]
+items = {
+    1: {"id": 1, "name": "Jean"},
+    2: {"id": 2, "name": "Benoit"},
+}
+next_id = 3
 
 @app.get("/health")
 def health():
@@ -15,10 +18,33 @@ def health():
 
 @app.get("/items")
 def get_items():
-    return items
+    return list(items.values())
 
 @app.post("/items", status_code=201)
 def create_item(item: ItemCreate):
-    d = {"id":len(items)+1, "name": item.name}
-    items.append(d)
+    global next_id
+    d = {"id":next_id, "name": item.name}
+    items[next_id] = d
+    next_id +=1
     return d
+
+@app.get("/items/{item_id}")
+def get_item(item_id: int):
+    if item_id not in items:
+        raise HTTPException(status_code=404, detail="Item not found")
+    return items[item_id]
+
+
+@app.put("/items/{item_id}")
+def update_item(item_id: int, item: ItemCreate):
+    if item_id not in items:
+        raise HTTPException(status_code=404, detail="Item not found")
+    items[item_id]["name"] = item.name
+    return items[item_id]
+
+@app.delete("/items/{item_id}", status_code=204)
+def delete_item(item_id: int):
+    if item_id not in items:
+        raise HTTPException(status_code=404, detail="Item not found")
+    del items[item_id]
+
